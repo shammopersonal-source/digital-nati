@@ -6,7 +6,7 @@
 // See README.md → "Adding real photos and screenshots".
 
 import type { ReactNode } from "react";
-import type { AppKind, Figure } from "@/content/courses";
+import type { AppKind, Figure, Picture } from "@/content/path";
 
 const PAPER = "var(--color-white)";
 const DEEP = "var(--color-paper-deep)";
@@ -14,6 +14,8 @@ const MARIGOLD_WASH = "var(--color-marigold-wash)";
 const GREEN_WASH = "var(--color-green-wash)";
 const GREEN = "var(--color-green)";
 const MARIGOLD = "var(--color-marigold)";
+const SKIN = "var(--color-skin)";
+const INK = "var(--color-ink)";
 
 /** Put this once on the page. Every drawing references it. */
 export function RoughFilter() {
@@ -60,7 +62,7 @@ function Svg({
 }
 
 /** A loose, hand-drawn loop around something important, like a pen circle on a printout. */
-function Loop({ cx, cy, rx, ry }: { cx: number; cy: number; rx: number; ry: number }) {
+export function Loop({ cx, cy, rx, ry }: { cx: number; cy: number; rx: number; ry: number }) {
   const points: string[] = [];
   const steps = 48;
   for (let i = 0; i <= steps; i++) {
@@ -74,7 +76,7 @@ function Loop({ cx, cy, rx, ry }: { cx: number; cy: number; rx: number; ry: numb
 }
 
 /** A small ink arrow pointing from (x1,y1) to (x2,y2). */
-function Arrow({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) {
+export function Arrow({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) {
   const a = Math.atan2(y2 - y1, x2 - x1);
   const h = 10;
   const p1 = `${x2 - h * Math.cos(a - 0.5)} ${y2 - h * Math.sin(a - 0.5)}`;
@@ -504,4 +506,98 @@ export function Flower({ className }: { className?: string }) {
       <circle cx="50" cy="44" r="10" fill={MARIGOLD} />
     </Svg>
   );
+}
+
+// ---- Nati, the guide ----
+
+export type NatiMood = "talk" | "happy" | "gentle";
+
+/** Nati: a friendly grandchild who guides every lesson. */
+export function Nati({ mood = "talk", className }: { mood?: NatiMood; className?: string }) {
+  return (
+    <Svg viewBox="0 0 120 150" className={className}>
+      <path d="M28 150 L33 110 Q60 96 87 110 L92 150 Z" fill={GREEN} />
+      <path d="M52 102 L60 114 L68 102" stroke="var(--color-paper)" strokeWidth={2} />
+      <path d="M54 86 V102 H66 V86" fill={SKIN} />
+      <circle cx="33" cy="66" r="5" fill={SKIN} />
+      <circle cx="87" cy="66" r="5" fill={SKIN} />
+      <circle cx="60" cy="62" r="27" fill={SKIN} />
+      <path d="M33 60 Q31 32 60 31 Q89 32 87 60 Q82 47 68 44 Q52 50 33 60 Z" fill={INK} />
+      {mood === "happy" ? (
+        <path d="M46 64 Q50 59 54 64 M66 64 Q70 59 74 64" strokeWidth={2.4} />
+      ) : (
+        <>
+          <circle cx="50" cy="63" r="2.8" fill={INK} stroke="none" />
+          <circle cx="70" cy="63" r="2.8" fill={INK} stroke="none" />
+        </>
+      )}
+      {mood === "gentle" ? (
+        <>
+          <path d="M45 55 Q50 53 55 55 M65 55 Q70 53 75 55" strokeWidth={1.8} />
+          <path d="M52 77 Q60 81 68 77" />
+        </>
+      ) : (
+        <path d={mood === "happy" ? "M47 74 Q60 88 73 74" : "M50 75 Q60 83 70 75"} />
+      )}
+      <circle cx="44" cy="72" r="3.5" fill={MARIGOLD_WASH} stroke="none" />
+      <circle cx="76" cy="72" r="3.5" fill={MARIGOLD_WASH} stroke="none" />
+      {mood === "happy" && (
+        <>
+          <path d="M86 112 Q98 100 104 84" strokeWidth={10} />
+          <path d="M86 112 Q98 100 104 84" strokeWidth={5.5} stroke={GREEN} />
+          <circle cx="105" cy="79" r="6" fill={SKIN} />
+        </>
+      )}
+      {mood === "gentle" && (
+        <>
+          <path d="M84 114 Q80 100 74 92" strokeWidth={10} />
+          <path d="M84 114 Q80 100 74 92" strokeWidth={5.5} stroke={GREEN} />
+          <circle cx="72" cy="88" r="6" fill={SKIN} />
+        </>
+      )}
+    </Svg>
+  );
+}
+
+// ---- Answer pictures ----
+
+export function PictureDrawing({ picture, className }: { picture: Picture; className?: string }) {
+  switch (picture) {
+    case "mouse":
+      return (
+        <Svg viewBox="0 0 120 110" className={className}>
+          <path d="M60 14 C88 14 94 42 94 66 C94 92 80 104 60 104 C40 104 26 92 26 66 C26 42 32 14 60 14 Z" fill={PAPER} />
+          <path d="M27 54 Q60 60 93 54 M60 14 V57" />
+          <path d="M55 26 H65 V44 H55 Z" fill={DEEP} />
+          <path d="M60 14 C60 8 66 6 72 4" />
+        </Svg>
+      );
+    case "keyboard":
+      return (
+        <Svg viewBox="0 0 160 90" className={className}>
+          <path d="M6 14 H154 V78 H6 Z" fill={DEEP} />
+          {[22, 36, 50].map((y) =>
+            Array.from({ length: 10 }, (_, i) => <path key={`${y}-${i}`} d={`M${14 + i * 13.5} ${y} h10 v10 h-10 Z`} strokeWidth={1.4} fill={PAPER} />),
+          )}
+          <path d="M40 64 H120 V73 H40 Z" strokeWidth={1.6} fill={PAPER} />
+        </Svg>
+      );
+    case "screen":
+      return (
+        <Svg viewBox="0 0 140 110" className={className}>
+          <path d="M14 8 H126 V78 H14 Z" fill={PAPER} />
+          <path d="M26 22 H90 M26 34 H108 M26 46 H76" strokeWidth={2} />
+          <path d="M70 78 V94 M50 96 H90" />
+        </Svg>
+      );
+    case "printer":
+      return (
+        <Svg viewBox="0 0 140 110" className={className}>
+          <path d="M40 10 H100 V40 H40 Z" fill={PAPER} />
+          <path d="M14 40 H126 V84 H14 Z" fill={DEEP} />
+          <path d="M40 70 H100 V102 H40 Z" fill={PAPER} />
+          <path d="M50 82 H90 M50 92 H80" strokeWidth={1.8} />
+        </Svg>
+      );
+  }
 }

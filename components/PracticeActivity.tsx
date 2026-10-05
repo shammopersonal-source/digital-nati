@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { getLesson, pick, type Practice } from "@/content/courses";
+import { getLesson, isReady, pick, type Practice } from "@/content/path";
 import { playground, practices } from "./practice";
 import { TextLink } from "./Button";
 
@@ -13,7 +13,7 @@ export default function PracticeActivity({ id }: { id: string }) {
   const [done, setDone] = useState(false);
   const item = playground.find((p) => p.id === id)!;
   const Exercise = practices[item.id as Practice];
-  const lesson = getLesson(item.lesson.courseId, item.lesson.lessonId);
+  const lesson = item.lesson ? getLesson(item.lesson.chapterId, item.lesson.lessonId) : undefined;
 
   return (
     <div className="mx-auto max-w-page px-5 py-8">
@@ -28,8 +28,8 @@ export default function PracticeActivity({ id }: { id: string }) {
         {done && <p className="mb-3 text-lg font-bold text-green">{t("doneNote")}</p>}
         <div className="flex flex-col items-start gap-1">
           <TextLink href="/practice">{t("tryAnother")}</TextLink>
-          {lesson && (
-            <TextLink href={`/courses/${item.lesson.courseId}/${item.lesson.lessonId}`}>
+          {lesson && item.lesson && isReady(lesson) && (
+            <TextLink href={`/learn/${item.lesson.chapterId}/${item.lesson.lessonId}`}>
               {t("lessonLink", { lesson: pick(lesson.title, locale) })}
             </TextLink>
           )}

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Figure, Practice } from "@/content/courses";
+import type { Figure, Practice } from "@/content/path";
 import MousePractice from "./MousePractice";
 import KeyboardPractice from "./KeyboardPractice";
 import ShutdownPractice from "./ShutdownPractice";
@@ -14,9 +14,9 @@ export const practices: Record<Practice, (p: { onDone: () => void }) => ReactNod
 };
 
 /** What the practice room offers, in order, with the lesson that teaches each one. */
-export const playground: { id: Practice; figure: Figure; lesson: { courseId: string; lessonId: string } }[] = [
-  { id: "mouse", figure: "mouse-left", lesson: { courseId: "computer-basics", lessonId: "mouse" } },
-  { id: "keyboard", figure: "keyboard-enter", lesson: { courseId: "computer-basics", lessonId: "keyboard" } },
-  { id: "shutdown", figure: "power-menu", lesson: { courseId: "computer-basics", lessonId: "turn-off" } },
-  { id: "word", figure: "word-bold", lesson: { courseId: "word", lessonId: "first-letter" } },
+export const playground: { id: Practice; figure: Figure; lesson?: { chapterId: string; lessonId: string } }[] = [
+  { id: "mouse", figure: "mouse-left", lesson: { chapterId: "mouse", lessonId: "meet" } },
+  { id: "keyboard", figure: "keyboard-enter", lesson: { chapterId: "keyboard", lessonId: "typing" } },
+  { id: "shutdown", figure: "power-menu" },
+  { id: "word", figure: "word-bold" },
 ];

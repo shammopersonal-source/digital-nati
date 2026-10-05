@@ -11,7 +11,7 @@ import { ButtonAnchor } from "./Button";
 import Icon from "./Icon";
 
 /** The "Need help?" button that is always in the bottom-right corner. */
-export default function HelpButton() {
+export default function HelpButton({ inline = false }: { inline?: boolean }) {
   const t = useTranslations("help");
   const [open, setOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
@@ -24,9 +24,11 @@ export default function HelpButton() {
           setShareUrl(window.location.href);
           setOpen(true);
         }}
-        className="no-print fixed bottom-4 right-4 z-40 inline-flex min-h-[3.2rem] items-center gap-3 rounded-md border-2 border-ink bg-marigold px-5 text-lg font-bold text-ink hover:bg-marigold-wash sm:bottom-6 sm:right-6"
+        className={`no-print inline-flex items-center gap-3 rounded-md border-2 border-ink bg-marigold text-lg font-bold text-ink hover:bg-marigold-wash ${
+          inline ? "min-h-[2.8rem] px-4" : "fixed bottom-4 right-4 z-40 min-h-[3.2rem] px-5 sm:bottom-6 sm:right-6"
+        }`}
       >
-        <Icon name="question" className="h-7 w-7" />
+        <Icon name="question" className={inline ? "h-6 w-6" : "h-7 w-7"} />
         {t("button")}
       </button>
 

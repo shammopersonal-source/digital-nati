@@ -56,6 +56,15 @@ export default function ReadingSettings() {
         off={t2("off")}
       />
 
+      <Toggle
+        label={t("easyMouse")}
+        help={t("easyMouseHelp")}
+        checked={settings.easyMouse}
+        onChange={(v) => saveSettings({ easyMouse: v })}
+        on={t2("on")}
+        off={t2("off")}
+      />
+
       <p className="border-l-4 border-marigold pl-3 text-ink-soft">{t("remembered")}</p>
     </div>
   );

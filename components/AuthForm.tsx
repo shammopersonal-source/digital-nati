@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { formatPhone, MOCK_OTP, normalisePhone, sendCode, toLatinDigits, verifyCode } from "@/lib/auth";
 import { saveLearner, useAppData } from "@/lib/storage";
-import { courses } from "@/content/courses";
+import { chapters } from "@/content/path";
 import { Button, TextLink } from "./Button";
 import Field from "./Field";
 
@@ -56,8 +56,8 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
         phone: number,
         helper: helping && helperNumber ? { name: helperName.trim(), phone: helperNumber } : null,
       });
-      const first = courses[0];
-      router.push(`/courses/${first.id}/${first.lessons[0].id}`);
+      const first = chapters[0];
+      router.push(`/learn/${first.id}/${first.lessons[0].id}`);
     } else {
       // Until there is a real account server, logging in on this computer keeps any details saved here.
       const known = data.learner?.phone === number ? data.learner : null;

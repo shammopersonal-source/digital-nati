@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { getCourse, pick } from "@/content/courses";
+import { getChapter, pick } from "@/content/path";
 import { saveLearner, useAppData, useHydrated } from "@/lib/storage";
 import { Button, ButtonLink } from "./Button";
 import Field from "./Field";
 import Icon from "./Icon";
 import { BrandMark } from "./illustrations/Drawings";
 
-export default function CertificateView({ courseId }: { courseId: string }) {
+export default function CertificateView({ chapterId }: { chapterId: string }) {
   const t = useTranslations("certificate");
   const locale = useLocale();
   const data = useAppData();
   const hydrated = useHydrated();
   const [name, setName] = useState("");
-  const course = getCourse(courseId)!;
-  const finishedAt = data.progress[courseId]?.finishedAt;
+  const course = getChapter(chapterId)!;
+  const finishedAt = data.progress[chapterId]?.finishedAt;
 
   if (!hydrated) return <div className="min-h-[60vh]" />;
 
@@ -25,7 +25,7 @@ export default function CertificateView({ courseId }: { courseId: string }) {
       <div className="mx-auto max-w-page px-5 py-8">
         <h1>{t("title")}</h1>
         <p className="mt-4 text-lg">{t("notFinished", { course: pick(course.title, locale) })}</p>
-        <ButtonLink href={`/courses/${courseId}`} className="mt-6">
+        <ButtonLink href="/learn" className="mt-6">
           {t("goToCourse")}
         </ButtonLink>
       </div>

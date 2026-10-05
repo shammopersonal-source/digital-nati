@@ -2,25 +2,23 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { courses, getCourse, isReady, pick, type Course, type Lesson } from "@/content/courses";
+import { chapters, getLesson, isReady, pick, type Chapter, type Lesson } from "@/content/path";
 import { useAppData, useHydrated, type AppData } from "@/lib/storage";
 import { whatsappLink } from "@/lib/site";
 import { ButtonAnchor, ButtonLink, TextLink } from "./Button";
 import Icon from "./Icon";
+import GoalSummary from "./learn/GoalSummary";
 
-/** The lesson to suggest next: unfinished last-opened lesson, else the next ready one. */
-function suggestNext(data: AppData): { course: Course; lesson: Lesson } | null {
+/** The lesson to suggest next: the unfinished one opened last, else the next ready one on the path. */
+function suggestNext(data: AppData): { course: Chapter; lesson: Lesson } | null {
   const done = (c: string, l: string) => data.progress[c]?.completed.includes(l);
   if (data.lastVisited) {
-    const course = getCourse(data.lastVisited.courseId);
-    const lesson = course?.lessons.find((l) => l.id === data.lastVisited!.lessonId);
-    if (course && lesson && !done(course.id, lesson.id)) return { course, lesson };
-    if (course) {
-      const next = course.lessons.find((l) => isReady(l) && !done(course.id, l.id));
-      if (next) return { course, lesson: next };
-    }
+    const { courseId, lessonId } = data.lastVisited;
+    const lesson = getLesson(courseId, lessonId);
+    const course = chapters.find((c) => c.id === courseId);
+    if (course && lesson && isReady(lesson) && !done(courseId, lessonId)) return { course, lesson };
   }
-  for (const course of courses) {
+  for (const course of chapters) {
     const next = course.lessons.find((l) => isReady(l) && !done(course.id, l.id));
     if (next) return { course, lesson: next };
   }
@@ -29,15 +27,15 @@ function suggestNext(data: AppData): { course: Course; lesson: Lesson } | null {
 
 export default function DashboardView() {
   const t = useTranslations("dashboard");
-  const tc = useTranslations("courses");
+  const tc = useTranslations("path");
   const locale = useLocale();
   const data = useAppData();
   const hydrated = useHydrated();
 
   const started = Object.values(data.progress).some((p) => p.completed.length > 0) || data.lastVisited !== null;
   const next = suggestNext(data);
-  const inProgress = courses.filter((c) => (data.progress[c.id]?.completed.length ?? 0) > 0 && !data.progress[c.id]?.finishedAt);
-  const finished = courses.filter((c) => data.progress[c.id]?.finishedAt);
+  const inProgress = chapters.filter((c) => (data.progress[c.id]?.completed.length ?? 0) > 0 && !data.progress[c.id]?.finishedAt);
+  const finished = chapters.filter((c) => data.progress[c.id]?.finishedAt);
   const totalDone = Object.values(data.progress).reduce((n, p) => n + p.completed.length, 0);
   const learner = data.learner;
 
@@ -56,7 +54,7 @@ export default function DashboardView() {
           <>
             {!started && <p className="mt-2 text-lg">{t("nothingYet")}</p>}
             {started && <p className="mt-2 text-ink-soft">{pick(next.course.title, locale)}</p>}
-            <ButtonLink href={`/courses/${next.course.id}/${next.lesson.id}`} className="mt-4 text-xl">
+            <ButtonLink href={`/learn/${next.course.id}/${next.lesson.id}`} className="mt-4 text-xl">
               {started
                 ? t("continue", { lesson: pick(next.lesson.title, locale) })
                 : t("startFirst", { lesson: pick(next.lesson.title, locale) })}
@@ -64,9 +62,13 @@ export default function DashboardView() {
             </ButtonLink>
           </>
         ) : (
-          <p className="mt-2 text-lg">{tc("comingSoon")}</p>
+          <p className="mt-2 text-lg">{tc("chapterComingSoon")}</p>
         )}
       </section>
+
+      <div className="mt-8 max-w-md">
+        <GoalSummary />
+      </div>
 
       {inProgress.length > 0 && (
         <section aria-labelledby="doing" className="mt-10">
@@ -74,10 +76,10 @@ export default function DashboardView() {
           <ul className="mt-4 border-t-2 border-ink">
             {inProgress.map((c) => (
               <li key={c.id} className="max-w-none border-b-2 border-line-soft py-4">
-                <Link href={`/courses/${c.id}`} className="text-link inline-flex min-h-[2.8rem] items-center font-heading text-xl">
+                <Link href="/learn" className="text-link inline-flex min-h-[2.8rem] items-center font-heading text-xl">
                   {pick(c.title, locale)}
                 </Link>
-                <p>{tc("inProgress", { done: data.progress[c.id].completed.length, total: c.lessons.length })}</p>
+                <p>{tc("chapterProgress", { done: data.progress[c.id].completed.length, total: c.lessons.length })}</p>
               </li>
             ))}
           </ul>

@@ -15,6 +15,7 @@ import {
   type ProgressBackup,
 } from "@/lib/storage";
 import ReadingSettings from "./ReadingSettings";
+import { GoalChooser } from "./learn/GoalSummary";
 import Field from "./Field";
 import Dialog from "./Dialog";
 import { Button } from "./Button";
@@ -57,6 +58,15 @@ export default function SettingsView() {
           <ReadingSettings />
         </div>
       </section>
+
+      {hydrated && (
+        <section aria-labelledby="goal" className="mt-12">
+          <h2 id="goal">{t("goalTitle")}</h2>
+          <div className="mt-4 rounded-md border-2 border-ink bg-white p-5">
+            <GoalChooser />
+          </div>
+        </section>
+      )}
 
       {hydrated && <Details t={t} ta={ta} />}
       {hydrated && <Danger t={t} />}
