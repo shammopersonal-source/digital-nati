@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { getCourse, isReady, pick, type Practice } from "@/content/courses";
+import { getCourse, isReady, pick } from "@/content/courses";
 import { completeLesson, markVisited, useAppData } from "@/lib/storage";
 import { phones } from "@/lib/site";
 import { Button, ButtonLink, TextLink } from "./Button";
@@ -12,19 +12,10 @@ import ReadAloud from "./ReadAloud";
 import Quiz from "./Quiz";
 import VideoPlayer from "./VideoPlayer";
 import { FigureDrawing, isWideFigure } from "./illustrations/Drawings";
-import MousePractice from "./practice/MousePractice";
-import KeyboardPractice from "./practice/KeyboardPractice";
-import ShutdownPractice from "./practice/ShutdownPractice";
-import WordPractice from "./practice/WordPractice";
+import { practices } from "./practice";
 
 const STEPS = ["watch", "read", "try", "check"] as const;
 
-const practices: Record<Practice, (p: { onDone: () => void }) => ReactNode> = {
-  mouse: MousePractice,
-  keyboard: KeyboardPractice,
-  shutdown: ShutdownPractice,
-  word: WordPractice,
-};
 
 /** Every lesson looks the same: Watch → Read → Try it → Check, one step at a time. */
 export default function LessonView({ courseId, lessonId }: { courseId: string; lessonId: string }) {

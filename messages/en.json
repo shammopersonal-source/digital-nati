@@ -24,6 +24,7 @@
     "label": "Main menu",
     "home": "Home",
     "courses": "Courses",
+    "practice": "Practice",
     "myLearning": "My learning",
     "help": "Help",
     "families": "For families",
@@ -132,6 +133,9 @@
     "learnTitle": "What you will learn",
     "learnIntro": "Start with the first course. Each one uses what you learned in the one before.",
     "allCourses": "See all courses",
+    "practiceTitle": "Practise any time",
+    "practiceText": "In the practice room you can use the mouse, type, turn off a pretend computer and write in a pretend Word — as often as you like.",
+    "practiceLink": "Go to the practice room",
     "familiesTitle": "For families",
     "familiesText": "Is your mother, father, grandmother or grandfather learning? You can set up their account, see how far they have come, and help them over WhatsApp — even if you live far away.",
     "familiesLink": "How families can help",
@@ -189,6 +193,23 @@
     "finished": "Finished ✓",
     "comingSoon": "Lessons coming soon",
     "open": "Open this course"
+  },
+  "playground": {
+    "title": "Practice room",
+    "intro": "Practise here as often as you like. There are no marks, no clock and nothing that can break. Choose one and try it.",
+    "note": "You don't need to log in, and nothing here is counted.",
+    "mouseTitle": "Using the mouse",
+    "mouseText": "Click, double-click, drag and scroll.",
+    "keyboardTitle": "Typing",
+    "keyboardText": "Type your name, rub out a letter and press Enter.",
+    "shutdownTitle": "Turning the computer off",
+    "shutdownText": "Start → Power → Shut down, on a pretend screen.",
+    "wordTitle": "Writing in Word",
+    "wordText": "Choose a word, make it bold and bigger, and save your letter.",
+    "chooseTitle": "What would you like to practise?",
+    "doneNote": "Well done! You can do it again, or try something else.",
+    "tryAnother": "Try something else",
+    "lessonLink": "Learn it step by step: {lesson}"
   },
   "course": {
     "lessonsTitle": "Lessons in this course",
@@ -365,7 +386,8 @@
     "noHelper": "A family member can follow your progress. Add their number in Settings.",
     "addName": "Add your name for the certificate",
     "settings": "Change my settings",
-    "savedHere": "Your ticks are saved on this computer."
+    "savedHere": "Your ticks are saved on this computer.",
+    "practiceRoom": "Go to the practice room"
   },
   "certificate": {
     "title": "Your certificate",

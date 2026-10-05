@@ -11,6 +11,7 @@ import { BrandMark } from "./illustrations/Drawings";
 const navItems = [
   { href: "/", key: "home" },
   { href: "/courses", key: "courses" },
+  { href: "/practice", key: "practice" },
   { href: "/my-learning", key: "myLearning" },
   { href: "/help", key: "help" },
 ] as const;

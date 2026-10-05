@@ -7,6 +7,7 @@ export default function SiteFooter() {
   const nav = useTranslations("nav");
   const links = [
     { href: "/courses", label: nav("courses") },
+    { href: "/practice", label: nav("practice") },
     { href: "/my-learning", label: nav("myLearning") },
     { href: "/help", label: nav("help") },
     { href: "/families", label: nav("families") },

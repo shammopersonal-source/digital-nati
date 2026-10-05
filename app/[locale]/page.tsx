@@ -68,6 +68,16 @@ function Home() {
         </TextLink>
       </section>
 
+      <section aria-labelledby="practice" className="mx-auto max-w-page px-5 pb-12">
+        <div className="border-l-4 border-green pl-5">
+          <h2 id="practice">{t("practiceTitle")}</h2>
+          <p className="mt-2">{t("practiceText")}</p>
+          <TextLink href="/practice" className="mt-1">
+            {t("practiceLink")}
+          </TextLink>
+        </div>
+      </section>
+
       <section aria-labelledby="families" className="mx-auto max-w-page px-5 pb-12">
         <div className="grid items-center gap-6 rounded-md border-2 border-ink bg-green-wash p-6 sm:grid-cols-[8rem_1fr] sm:p-8">
           <PhoneMessage className="mx-auto w-24 text-ink sm:w-32" />

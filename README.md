@@ -23,7 +23,7 @@ It deploys on Vercel with no configuration: import the repository and press Depl
 - **Every page is static**, which keeps it fast on slow connections. Saved progress is read in the browser.
 
 ```
-app/[locale]/            Pages (home, courses, lessons, my-learning, certificate, help, families, settings, signup, login)
+app/[locale]/            Pages (home, courses, lessons, practice room, my-learning, certificate, help, families, settings, signup, login)
 components/              Shared pieces: Button, PageTop (back button + breadcrumb), HelpButton, ReadingSettings,
                          VideoPlayer, LessonView, Quiz, RichText (glossary words), CourseList, Dialog …
 components/practice/     The "Try it" exercises: MousePractice, KeyboardPractice, ShutdownPractice, WordPractice
@@ -83,7 +83,7 @@ These rules are built into the code. Please keep them.
 
 - **Glossary words.** `[[word]]` marks a word from `glossary` in `messages/*.json`. It gets a dotted underline and explains itself when tapped. Only mark the first time a word appears in a lesson. To add a new word, add it to both message files.
 - **Videos.** Put them in `public/videos/`. Keep each one 2 to 5 minutes, recorded on a real screen, and always add `.vtt` captions. Without a `video`, the lesson shows a calm "being recorded" note.
-- **Practice.** `practice` picks one of the exercises in `components/practice/`. To add a new kind, build a component that takes `onDone`, add its name to the `Practice` type, and register it in `components/LessonView.tsx`.
+- **Practice.** `practice` picks one of the exercises in `components/practice/`. To add a new kind, build a component that takes `onDone`, add its name to the `Practice` type, and register it in `components/practice/index.tsx`. Add it to `playground` in the same file to show it in the practice room (`/practice`) too, and add its title and text under `playground` in both message files.
 - Write in plain, spoken language at about a Class 6 reading level. In Bangla, always use আপনি.
 
 ## Adding real photos and screenshots

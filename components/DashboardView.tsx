@@ -137,6 +137,7 @@ export default function DashboardView() {
 
       <div className="mt-8 flex flex-col items-start gap-1">
         {!learner?.name && <TextLink href="/settings">{t("addName")}</TextLink>}
+        <TextLink href="/practice">{t("practiceRoom")}</TextLink>
         <TextLink href="/settings">{t("settings")}</TextLink>
         <p className="text-ink-soft">{t("savedHere")}</p>
       </div>
