@@ -24,7 +24,7 @@ export const whatsappShareLink = (text: string) =>
 
 export const karjoUrl = "https://karjo.co.uk";
 
-// TODO: add the KARJO Prime website address. The footer shows the link once this is set.
-export const karjoPrimeUrl: string | null = null;
+export const karjoPrimeUrl: string | null = "https://karjoprime.co";
 
-export const founderName = "Ali Zawad";
+/** The founder's name as written in each language. */
+export const founderName = { bn: "আলী জাওয়াদ", en: "Ali Zawad" } as const;
