@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+/*
+  Digital Nati design tokens.
+  Root font size is 20px (125%), so 1rem = 20px. Tailwind's spacing and our
+  type scale are in rem, so the "Text size" setting scales the whole page.
+  The default Tailwind type scale is removed on purpose: there is no text-sm
+  or text-xs, so nothing can be set below 18px (0.9rem).
+*/
+@theme {
+  --color-*: initial;
+  --color-paper: #faf7f0;
+  --color-paper-deep: #efe9dc;
+  --color-white: #ffffff;
+  --color-ink: #1f2a2e;
+  --color-ink-soft: #3d4a4e;
+  --color-line: #1f2a2e;
+  --color-line-soft: #c9c1b0;
+  --color-green: #1e5b4f;
+  --color-green-dark: #174a40;
+  --color-green-wash: #e3efea;
+  --color-marigold: #e0a526;
+  --color-marigold-wash: #f3e3b5;
+  --color-brick: #a63d2f;
+  --color-brick-text: #8e3326;
+  --color-brick-wash: #f6e4e0;
+  --color-select: #b9d3f0;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --text-*: initial;
+  --text-small: 0.9rem;
+  --text-small--line-height: 1.55;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.15rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.35rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.65rem;
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 2.1rem;
+  --text-3xl--line-height: 1.2;
+
+  --font-body: var(--font-atkinson), var(--font-hind-siliguri), system-ui, sans-serif;
+  --font-heading: var(--font-source-serif), var(--font-tiro-bangla), Georgia, serif;
+  --font-hand: var(--font-kalam), var(--font-galada), cursive;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --container-prose: 36rem;
+  --container-page: 60rem;
+}
+
+/* Stronger colours: black on white, thicker lines. */
+html[data-contrast="high"] {
+  --color-paper: #ffffff;
+  --color-paper-deep: #ffffff;
+  --color-ink: #000000;
+  --color-ink-soft: #000000;
+  --color-line-soft: #000000;
+  --color-green: #0b3b32;
+  --color-green-dark: #000000;
+  --color-green-wash: #ffffff;
+  --color-marigold-wash: #ffffff;
+  --color-brick-text: #6b1f15;
+  --color-brick-wash: #ffffff;
+}
+html[data-contrast="high"] .border,
+html[data-contrast="high"] .border-2 {
+  border-width: 3px;
+  border-color: #000000;
+}
+
+/* Base styles live in the base layer so Tailwind utilities can override them. */
+@layer base {
+  html {
+    font-size: 125%;
+    -webkit-text-size-adjust: 100%;
+  }
+  html[data-text-size="large"] {
+    font-size: 140%;
+  }
+  html[data-text-size="xl"] {
+    font-size: 160%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+  }
+  html[lang="bn"] body {
+    line-height: 1.75;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  h1 {
+    font-size: var(--text-3xl);
+    line-height: 1.2;
+  }
+  h2 {
+    font-size: var(--text-2xl);
+    line-height: 1.3;
+  }
+  h3 {
+    font-size: var(--text-xl);
+    line-height: 1.35;
+  }
+  html[lang="bn"] :is(h1, h2, h3) {
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+  p,
+  li {
+    max-width: 65ch;
+  }
+
+}
+
+/* Links inside running text are always underlined. */
+.prose-links a,
+a.text-link {
+  color: var(--color-green);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+.prose-links a:hover,
+a.text-link:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* A very visible focus ring: ink outline with a marigold halo. */
+:focus-visible {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--color-marigold);
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-marigold-wash);
+  color: var(--color-ink);
+}
+
+dialog::backdrop {
+  background: rgb(31 42 46 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Only shown when printing (e.g. the lesson recap). */
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm;
+  }
+  html {
+    font-size: 11pt;
+  }
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block;
+  }
+  a {
+    color: #000000;
+    text-decoration: none;
+  }
+}
