@@ -5,9 +5,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import { applySettingsScript } from "@/lib/storage-key";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
-import HelpButton from "@/components/HelpButton";
 import { RoughFilter } from "@/components/illustrations/Drawings";
 import "../globals.css";
 
@@ -33,7 +30,6 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const t = await getTranslations("common");
 
   return (
     <html
@@ -49,18 +45,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col">
         <RoughFilter />
         <NextIntlClientProvider>
-          <a
-            href="#main"
-            className="no-print sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:p-4"
-          >
-            {t("skipToContent")}
-          </a>
-          <SiteHeader />
-          <main id="main" className="flex-1 pb-28">
-            {children}
-          </main>
-          <SiteFooter />
-          <HelpButton />
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

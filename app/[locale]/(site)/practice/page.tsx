@@ -5,10 +5,11 @@ import { Link } from "@/i18n/navigation";
 import PageTop from "@/components/PageTop";
 import { playground } from "@/components/practice";
 import { FigureDrawing, isWideFigure } from "@/components/illustrations/Drawings";
+import ReviewCard from "@/components/learn/ReviewCard";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/practice">): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "playground" });
+  const t = await getTranslations({ locale, namespace: "review" });
   return { title: t("title") };
 }
 
@@ -20,17 +21,20 @@ export default async function PracticeRoomPage({ params }: PageProps<"/[locale]/
 
 function PracticeRoom() {
   const t = useTranslations("playground");
-  const th = useTranslations("home");
+  const tr = useTranslations("review");
   return (
     <>
-      <PageTop back="/" crumbs={[{ label: t("title") }]} />
+      <PageTop back="/" crumbs={[{ label: tr("title") }]} />
       <div className="mx-auto max-w-page px-5 py-8">
-        <h1>{t("title")}</h1>
-        <p className="mt-3 text-lg">{t("intro")}</p>
-        <p className="mt-2 text-ink-soft">{t("note")}</p>
-        <p className="mt-4 -rotate-1 font-hand text-xl text-green-dark">{th("marginNote")}</p>
+        <h1>{tr("title")}</h1>
+        <p className="mt-3 text-lg">{tr("intro")}</p>
+        <div className="mt-6">
+          <ReviewCard />
+        </div>
 
-        <h2 className="mt-10">{t("chooseTitle")}</h2>
+        <h2 className="mt-12">{tr("freeTitle")}</h2>
+        <p className="mt-2 text-lg">{tr("freeIntro")}</p>
+        <p className="mt-1 text-ink-soft">{t("note")}</p>
         <ul className="mt-4 border-t-2 border-ink">
           {playground.map((item) => (
             <li key={item.id} className="max-w-none border-b-2 border-line-soft">

@@ -1,9 +1,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { ButtonLink, TextLink } from "@/components/Button";
-import CourseList from "@/components/CourseList";
+import { chapters, pick } from "@/content/path";
 import { founderName } from "@/lib/site";
-import { LaptopWithCha, PhoneMessage } from "@/components/illustrations/Drawings";
+import { LaptopWithCha, Nati, PhoneMessage } from "@/components/illustrations/Drawings";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -13,6 +13,8 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
 function Home() {
   const t = useTranslations("home");
+  const tp = useTranslations("player");
+  const tpath = useTranslations("path");
   const locale = useLocale();
   const steps = [1, 2, 3] as const;
 
@@ -31,6 +33,10 @@ function Home() {
           </div>
         </div>
         <div className="relative mx-auto w-full max-w-sm text-ink">
+          <div className="mb-2 flex items-end gap-3">
+            <Nati mood="happy" className="w-20 shrink-0" />
+            <p className="relative mb-6 rounded-md border-2 border-ink bg-white px-4 py-2 font-heading text-lg">{tp("natiHello")}</p>
+          </div>
           <LaptopWithCha className="w-full" />
           <p className="absolute -bottom-6 left-2 -rotate-3 font-hand text-xl text-green-dark">
             {t("marginNote")}
@@ -60,10 +66,21 @@ function Home() {
       <section aria-labelledby="learn" className="mx-auto max-w-page px-5 py-12">
         <h2 id="learn">{t("learnTitle")}</h2>
         <p className="mt-2">{t("learnIntro")}</p>
-        <div className="mt-6">
-          <CourseList compact />
-        </div>
-        <TextLink href="/courses" className="mt-4">
+        <ol className="mt-6 grid border-t-2 border-ink md:grid-cols-2 md:gap-x-10">
+          {chapters.map((c, i) => (
+            <li key={c.id} className="grid max-w-none grid-cols-[3rem_1fr] gap-3 border-b-2 border-line-soft py-4">
+              <span aria-hidden="true" className="font-heading text-2xl text-green">
+                {i + 1}.
+              </span>
+              <span>
+                <span className="block font-heading text-xl">{pick(c.title, locale)}</span>
+                <span className="block">{pick(c.description, locale)}</span>
+                {!c.lessons.some((l) => l.exercises?.length) && <span className="block text-ink-soft">{tpath("comingSoon")}</span>}
+              </span>
+            </li>
+          ))}
+        </ol>
+        <TextLink href="/learn" className="mt-4">
           {t("allCourses")}
         </TextLink>
       </section>

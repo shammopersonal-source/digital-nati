@@ -25,7 +25,7 @@ export default async function PracticeActivityPage({ params }: Props) {
   const t = await getTranslations("playground");
   return (
     <>
-      <PageTop back="/practice" crumbs={[{ label: t("title"), href: "/practice" }, { label: t(`${activity}Title`) }]} />
+      <PageTop back="/practice" crumbs={[{ label: (await getTranslations("review"))("title"), href: "/practice" }, { label: t(`${activity}Title`) }]} />
       <PracticeActivity id={activity} />
     </>
   );
