@@ -153,7 +153,8 @@
     "primeLink": "Visit KARJO Prime",
     "karjoLink": "KARJO website",
     "linksTitle": "Pages",
-    "madeWithCare": "Made with care by KARJO"
+    "madeWithCare": "Made with care by KARJO",
+    "creditsLink": "Photo credits"
   },
   "auth": {
     "signupTitle": "Start learning",
@@ -515,5 +516,23 @@
     "hard": "{count, plural, one {# thing you found hard will come first.} other {# things you found hard will come first.}}",
     "freeTitle": "Practise your own way",
     "freeIntro": "Try things on a pretend computer as often as you like."
+  },
+  "photos": {
+    "mouseHand": "Photo: a hand resting lightly on a mouse. The fingers on the buttons are circled.",
+    "mouseLeft": "Photo of a mouse. The left button is circled.",
+    "mouseWheel": "Photo of a mouse. The small wheel in the middle is circled.",
+    "keyboardEnter": "Photo of a keyboard. The Enter key is circled.",
+    "keyboardBackspace": "Photo of a keyboard. The Backspace key is circled.",
+    "keyboardSpace": "Photo of a keyboard. The space bar is circled.",
+    "keyboardShift": "Photo of a keyboard. Both Shift keys are circled.",
+    "keyboardTap": "Photo of a keyboard. Tap a key."
+  },
+  "credits": {
+    "title": "Photo credits",
+    "intro": "The photos of the mouse, keyboard, monitor and printer come from Wikimedia Commons. Thank you to the people who shared them.",
+    "author": "By",
+    "licence": "Licence",
+    "source": "See the original",
+    "changed": "We cropped and resized the photos to fit this site."
   }
 }

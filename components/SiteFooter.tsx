@@ -14,6 +14,7 @@ export default function SiteFooter() {
     { href: "/settings", label: nav("settings") },
     { href: "/signup", label: nav("signup") },
     { href: "/login", label: nav("login") },
+    { href: "/credits", label: t("creditsLink") },
   ] as const;
 
   return (
