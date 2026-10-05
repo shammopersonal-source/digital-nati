@@ -11,13 +11,19 @@ export default function ContactButtons({ compact = false, quiet = false }: { com
       {phones.map((p) => (
         <li key={p.international} className="flex flex-col gap-3 rounded-md border-2 border-ink bg-white p-4">
           <p className="text-xl font-bold tracking-wide">{p.display}</p>
-          <ButtonAnchor href={telLink(p)} variant={quiet ? "secondary" : "primary"}>
+          <ButtonAnchor href={telLink(p)} variant={quiet ? "secondary" : "primary"} aria-label={`${t("call")} ${p.display}`}>
             <Icon name="phone" />
-            {t("call", { number: p.display })}
+            {t("call")}
           </ButtonAnchor>
-          <ButtonAnchor href={whatsappLink(p)} target="_blank" rel="noopener noreferrer" variant="secondary">
+          <ButtonAnchor
+            href={whatsappLink(p)}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="secondary"
+            aria-label={`${t("whatsapp")} ${p.display}`}
+          >
             <Icon name="chat" />
-            {t("whatsapp", { number: p.display })}
+            {t("whatsapp")}
           </ButtonAnchor>
         </li>
       ))}

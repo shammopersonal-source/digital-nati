@@ -24,7 +24,6 @@ function Home() {
         <div>
           <h1 className="max-w-[18ch]">{t("title")}</h1>
           <p className="mt-5 text-lg">{t("intro")}</p>
-          <p className="mt-3 text-ink-soft">{t("nameMeaning")}</p>
           <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-6">
             <ButtonLink href="/signup" className="text-xl">
               {t("start")}
@@ -65,7 +64,6 @@ function Home() {
 
       <section aria-labelledby="learn" className="mx-auto max-w-page px-5 py-12">
         <h2 id="learn">{t("learnTitle")}</h2>
-        <p className="mt-2">{t("learnIntro")}</p>
         <ol className="mt-6 grid border-t-2 border-ink md:grid-cols-2 md:gap-x-10">
           {chapters.map((c, i) => (
             <li key={c.id} className="grid max-w-none grid-cols-[3rem_1fr] gap-3 border-b-2 border-line-soft py-4">
@@ -113,7 +111,6 @@ function Home() {
         <div className="mt-4 space-y-4 border-l-4 border-marigold pl-5">
           <p>{t("why1", { founder: founderName[locale === "en" ? "en" : "bn"] })}</p>
           <p>{t("why2")}</p>
-          <p className="font-bold">{t("why3")}</p>
         </div>
         {/*
           Real learner quotes go here once we have them (with permission).
