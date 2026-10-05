@@ -14,6 +14,8 @@ export type Settings = {
   textSize: TextSize;
   highContrast: boolean;
   readAloud: boolean;
+  /** Slower double-click and click-to-pick-up dragging, for unsteady hands. */
+  easyMouse: boolean;
 };
 
 export type Helper = { name: string; phone: string };
@@ -38,6 +40,12 @@ export type AppData = {
   progress: Record<string, CourseProgress>;
   /** The lesson the learner opened most recently. */
   lastVisited: { courseId: string; lessonId: string } | null;
+  /** Minutes learned per day, keyed "YYYY-MM-DD" (local time). */
+  days: Record<string, number>;
+  /** Minutes a day the learner aims for. null until they choose. */
+  dailyGoal: 5 | 10 | 15 | null;
+  /** Exercises answered wrong at least once, as "chapter/lesson/index". Brush-up uses these first. */
+  mistakes: string[];
 };
 
 export { STORAGE_KEY };
@@ -46,6 +54,7 @@ export const DEFAULT_SETTINGS: Settings = {
   textSize: "normal",
   highContrast: false,
   readAloud: false,
+  easyMouse: false,
 };
 
 const DEFAULT_DATA: AppData = {
@@ -54,6 +63,9 @@ const DEFAULT_DATA: AppData = {
   learner: null,
   progress: {},
   lastVisited: null,
+  days: {},
+  dailyGoal: null,
+  mistakes: [],
 };
 
 function applySettingsToDocument(settings: Settings) {
@@ -75,6 +87,8 @@ function read(): AppData {
       ...parsed,
       settings: { ...DEFAULT_SETTINGS, ...parsed.settings },
       progress: parsed.progress ?? {},
+      days: parsed.days ?? {},
+      mistakes: parsed.mistakes ?? [],
     };
   } catch {
     cache = DEFAULT_DATA;
@@ -177,15 +191,45 @@ export function completeLesson(
   });
 }
 
-export type ProgressBackup = Pick<AppData, "progress" | "lastVisited">;
+export type ProgressBackup = Pick<AppData, "progress" | "lastVisited" | "days" | "mistakes">;
 
 /** Removes all progress and returns what was removed, so it can be undone. */
 export function clearProgress(): ProgressBackup {
-  const { progress, lastVisited } = read();
-  update((d) => ({ ...d, progress: {}, lastVisited: null }));
-  return { progress, lastVisited };
+  const { progress, lastVisited, days, mistakes } = read();
+  update((d) => ({ ...d, progress: {}, lastVisited: null, days: {}, mistakes: [] }));
+  return { progress, lastVisited, days, mistakes };
 }
 
 export function restoreProgress(backup: ProgressBackup) {
   update((d) => ({ ...d, ...backup }));
+}
+
+// ---- Daily practice ----
+
+/** "YYYY-MM-DD" for a date in the learner's own time zone. */
+export function dayKey(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export function addMinutes(minutes: number) {
+  const key = dayKey();
+  update((d) => ({ ...d, days: { ...d.days, [key]: (d.days[key] ?? 0) + minutes } }));
+}
+
+export function setDailyGoal(goal: 5 | 10 | 15) {
+  update((d) => ({ ...d, dailyGoal: goal }));
+}
+
+// ---- Mistakes (for brush-up) ----
+
+export function recordMistakes(add: string[], remove: string[] = []) {
+  update((d) => {
+    const set = new Set(d.mistakes);
+    remove.forEach((k) => set.delete(k));
+    add.forEach((k) => set.add(k));
+    return { ...d, mistakes: [...set] };
+  });
 }
