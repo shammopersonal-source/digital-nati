@@ -23,19 +23,32 @@ It deploys on Vercel with no configuration: import the repository and press Depl
 - **Every page is static**, which keeps it fast on slow connections. Saved progress is read in the browser.
 
 ```
-app/[locale]/            Pages (home, courses, lessons, practice room, my-learning, certificate, help, families, settings, signup, login)
-components/              Shared pieces: Button, PageTop (back button + breadcrumb), HelpButton, ReadingSettings,
-                         VideoPlayer, LessonView, Quiz, RichText (glossary words), CourseList, Dialog …
-components/practice/     The "Try it" exercises: MousePractice, KeyboardPractice, ShutdownPractice, WordPractice
-components/illustrations Hand-drawn style SVG drawings used instead of photos and screenshots
-content/courses.ts       All courses and lessons, in both languages
+app/[locale]/(site)/     Ordinary pages with the menu: home, learning path (/learn), practice (/practice),
+                         my-learning, certificate, help, families, settings, signup, login
+app/[locale]/(focus)/    Lessons (/learn/[chapter]/[lesson]) and brush-up (/review): no menu, nothing to distract
+components/learn/        The learning engine: LessonPlayer, the exercise screens (Exercises.tsx), tappable
+                         mouse/keyboard pictures, on-screen keyboard, skill tasks, PathView, GoalSummary
+components/practice/     Free practice exercises (mouse board, typing, shut-down screen, pretend Word)
+components/illustrations Hand-drawn style SVG drawings, including Nati, the guide
+content/path.ts          The learning path: chapters → lessons → exercises, in both languages
 messages/bn.json, en.json  Every piece of interface text
 lib/storage.ts           The only place that reads or writes saved data
+lib/speech.ts            Reading aloud (recorded audio if there is some, else the computer's voice)
 lib/auth.ts              Mock phone + one-time-code login
 lib/site.ts              Phone numbers, KARJO and KARJO Prime links, founder name
 i18n/                    Language routing (next-intl)
 proxy.ts                 Sends "/" to Bangla and "/en/…" to English
 ```
+
+### How learning works (like Duolingo, but gentle)
+
+- **The learning path** (`/learn`) is one winding road of lessons, grouped into chapters. The next lesson glows: "Start here". Nothing is locked; skipping ahead only shows a kind note.
+- **A lesson** is 5–10 small screens. Nati, the guide, says what to do in a speech bubble (with a "Listen" button), and the learner answers. Screen types: something new (`learn`), pick one (`choice`, words or pictures), tap the right part of a mouse/keyboard picture (`tap`), match the pairs (`match`), put steps in order (`order`), type (`type`, with an on-screen keyboard that lights up the next key) and do it for real (`do`: click, double-click, drag, scroll, Backspace, Enter).
+- **Feedback is kind and grows step by step:** first wrong try → "Almost!" and a hint; second → the right answer is shown and the question comes back later in the lesson. "Show me" circles what to do. A "do" task can be skipped. No hearts, no timers, no scores.
+- **Gentle rewards:** a daily goal (5, 10 or 15 minutes), the days learned this week (Saturday to Friday), and a certificate for each finished chapter. No streak that breaks, no leaderboards.
+- **Brush-up** (`/review`) brings back what the learner got wrong first, then mixes in other questions from finished lessons.
+- **Easier mouse** (in the "Aa" settings): slower double-clicks count, and dragging works by click to pick up, click to put down.
+
 
 ### Design rules
 
@@ -51,47 +64,45 @@ These rules are built into the code. Please keep them.
 
 ## Adding a lesson
 
-1. Open `content/courses.ts` and find the course.
-2. Add a `content` object to the lesson. A lesson without `content` shows as "coming soon":
+Open `content/path.ts`, find the chapter, and give the lesson an `exercises` list. A lesson without exercises shows as "coming soon".
 
 ```ts
 {
-  id: "open-letter",
+  id: "desktop",
   minutes: 4,
-  title: { bn: "…", en: "Opening a saved letter" },
-  content: {
-    summary: { bn: "…", en: "…" },
-    video: { src: "/videos/open-letter.mp4", captions: { bn: "/videos/open-letter.bn.vtt", en: "/videos/open-letter.en.vtt" } },
-    steps: [
-      { text: { bn: "…", en: "[[doubleClick]] on your letter to open it." }, figure: "word-save" },
-      { text: { bn: "…", en: "…" }, image: { src: "/screenshots/open.png", alt: { bn: "…", en: "…" } } },
-    ],
-    tip: { bn: "…", en: "…" },
-    practice: "word",
-    quiz: [
-      {
-        question: { bn: "…", en: "…" },
-        options: [
-          { text: { bn: "…", en: "…" }, correct: true },
-          { text: { bn: "…", en: "…" }, hint: { bn: "…", en: "A gentle nudge, never a telling-off." } },
-        ],
-      },
-    ],
-  },
+  title: { bn: "ডেস্কটপ আর আইকন", en: "The desktop and icons" },
+  exercises: [
+    { kind: "learn", figure: "start-button", text: { bn: "…", en: "This is the [[desktop]]…" } },
+    {
+      kind: "choice",
+      prompt: { bn: "…", en: "Which one opens the Start menu?" },
+      options: [
+        { text: { bn: "…", en: "The sign with four squares" }, correct: true },
+        { text: { bn: "…", en: "The clock" }, hint: { bn: "…", en: "A gentle nudge, never a telling-off." } },
+      ],
+      explain: { bn: "…", en: "Shown with the right answer after a second wrong try." },
+    },
+    { kind: "tap", on: "keyboard", answer: "enter", prompt: { bn: "…", en: "Touch the Enter key." } },
+    { kind: "match", prompt: { bn: "জোড়া মেলান", en: "Match the pairs" }, pairs: [{ left: { bn: "Save", en: "Save" }, right: { bn: "রেখে দিন", en: "Keep it" } }] },
+    { kind: "order", prompt: { bn: "…", en: "Put the steps in order." }, steps: [/* written in the right order */] },
+    { kind: "type", prompt: { bn: "লিখুন: ami", en: "Type: tea" }, answer: { bn: "ami", en: "tea" } },
+    { kind: "do", skill: "doubleClick", prompt: { bn: "…", en: "Double-click the folder." } },
+  ],
 }
 ```
 
-- **Glossary words.** `[[word]]` marks a word from `glossary` in `messages/*.json`. It gets a dotted underline and explains itself when tapped. Only mark the first time a word appears in a lesson. To add a new word, add it to both message files.
-- **Videos.** Put them in `public/videos/`. Keep each one 2 to 5 minutes, recorded on a real screen, and always add `.vtt` captions. Without a `video`, the lesson shows a calm "being recorded" note.
-- **Practice.** `practice` picks one of the exercises in `components/practice/`. To add a new kind, build a component that takes `onDone`, add its name to the `Practice` type, and register it in `components/practice/index.tsx`. Add it to `playground` in the same file to show it in the practice room (`/practice`) too, and add its title and text under `playground` in both message files.
+- Keep lessons short: 5–10 screens, and start new ideas with a `learn` screen.
+- `[[word]]` marks a word from `glossary` in `messages/*.json`. It gets a dotted underline and explains itself when tapped. Add new words to both message files.
+- **Voice.** Add `audio: { bn: "/audio/desktop-1.mp3", en: "…" }` to any screen to use a recorded voice (put files in `public/audio/`). Without it, the computer's own voice is used; many computers have no Bangla voice, so recorded audio is much better.
+- **A chapter video** (optional): set `video` on the chapter.
+- **New kinds of screen or practice:** exercise screens live in `components/learn/Exercises.tsx` (plus `isCorrect` for checkable ones). Free practice exercises are registered in `components/practice/index.tsx`.
 - Write in plain, spoken language at about a Class 6 reading level. In Bangla, always use আপনি.
 
 ## Adding real photos and screenshots
 
 We have no real photos yet, so the site uses hand-drawn style SVG drawings (`components/illustrations/Drawings.tsx`). **Do not use stock photos or AI-generated people.**
 
-- **Lesson screenshots.** Put files in `public/screenshots/` and set `image: { src, alt }` on the step. The screenshot replaces the drawing. Mark the important button with a circle or arrow on the image itself.
-- **Course pictures.** Set `screenshot: "/screenshots/word.png"` on a course in `content/courses.ts`.
+- **Lesson pictures.** Put files in `public/screenshots/`. To use them on `learn` screens, add an `image` option next to `figure` in `content/path.ts` and render it in `LearnView` (`components/learn/Exercises.tsx`).
 - **Learner photos and testimonials.** There is a commented-out section at the end of `app/[locale]/page.tsx`. Only add real quotes from real learners, with their permission. Never add made-up numbers or reviews.
 
 ## Plugging in a real backend
@@ -102,5 +113,6 @@ We have no real photos yet, so the site uses hand-drawn style SVG drawings (`com
 
 ## Things still to fill in
 
-- Lesson videos and captions, and the "How to use this website" video (in the help panel and on `/help`).
-- Lesson content for the courses marked "coming soon".
+- Recorded Bangla voice lines for the lessons (see "Voice" above).
+- Lessons for the chapters marked "coming soon" (Windows, files, internet safety, WhatsApp and email, Word, Excel, PowerPoint).
+- The "How to use this website" video (in the help panel and on `/help`).
