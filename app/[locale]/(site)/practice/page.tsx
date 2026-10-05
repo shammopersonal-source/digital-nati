@@ -41,7 +41,7 @@ function PracticeRoom() {
               <Link href={`/practice/${item.id}`} className="group flex items-center gap-5 py-5 no-underline hover:bg-white">
                 <span className="w-32 shrink-0 text-ink sm:w-44">
                   <span className={`block ${isWideFigure(item.figure) ? "" : "mx-auto w-20 sm:w-24"}`}>
-                    <FigureDrawing figure={item.figure} />
+                    <FigureDrawing figure={item.figure} decorative />
                   </span>
                 </span>
                 <span className="flex flex-col gap-1">

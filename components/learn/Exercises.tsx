@@ -88,7 +88,11 @@ export function useAnswerText() {
 export function LearnView({ ex }: { ex: Of<"learn"> }) {
   if (!ex.figure && !ex.picture) return null;
   return (
-    <div className={`mx-auto text-ink ${ex.figure && isWideFigure(ex.figure) ? "max-w-xl" : ex.picture ? "max-w-xs" : "max-w-[12rem]"}`}>
+    <div
+      className={`mx-auto text-ink ${
+        (ex.figure && isWideFigure(ex.figure)) || ex.picture === "keyboard" ? "max-w-xl" : ex.picture ? "max-w-xs" : "max-w-[12rem]"
+      }`}
+    >
       {ex.figure ? <FigureDrawing figure={ex.figure} /> : ex.picture ? <PictureDrawing picture={ex.picture} className="w-full" /> : null}
     </div>
   );
@@ -145,7 +149,7 @@ export function ChoiceView({
             )}
             {o.picture && (
               <>
-                <PictureDrawing picture={o.picture} className="w-full text-ink" />
+                <PictureDrawing picture={o.picture} className="w-full" boxed decorative />
                 <span className="sr-only">{t(`pic${o.picture[0].toUpperCase()}${o.picture.slice(1)}` as "picMouse")}</span>
               </>
             )}

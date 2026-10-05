@@ -2,11 +2,15 @@
 // ink lines (currentColor), soft palette fills, and the shared "dn-rough"
 // filter (see RoughFilter) that gives every line a slight pencil wobble.
 //
-// These stand in for real photos and screenshots until we have them.
+// Real things (mouse, keyboard, monitor, printer) are photos instead: see Photos.tsx.
+// The screen drawings stand in for real screenshots until we have them.
 // See README.md → "Adding real photos and screenshots".
 
 import type { ReactNode } from "react";
+import Image, { type StaticImageData } from "next/image";
+import { useTranslations } from "next-intl";
 import type { AppKind, Figure, Picture } from "@/content/path";
+import { type Box, PhotoWithRing, grow, keyBoxes, mouseBoxes, photos } from "./Photos";
 
 const PAPER = "var(--color-white)";
 const DEEP = "var(--color-paper-deep)";
@@ -242,95 +246,6 @@ export function AppSketch({ kind, className }: { kind: AppKind; className?: stri
   }
 }
 
-function MouseBody() {
-  return (
-    <>
-      <path d="M100 20 C150 20 160 70 160 120 C160 180 135 205 100 205 C65 205 40 180 40 120 C40 70 50 20 100 20 Z" fill={PAPER} />
-      <path d="M42 98 Q100 108 158 98 M100 20 V102" />
-      <path d="M92 44 H108 V78 H92 Z" fill={DEEP} />
-      <path d="M100 20 C100 8 112 4 122 2" />
-    </>
-  );
-}
-
-function MouseFigure({ highlight }: { highlight: "hand" | "left" | "wheel" }) {
-  return (
-    <Svg viewBox="0 -4 210 215" className="h-full w-full">
-      <MouseBody />
-      {highlight === "hand" && (
-        <>
-          <path d="M56 42 Q68 32 80 42 L86 132 Q70 140 54 132 Z" fill={MARIGOLD_WASH} />
-          <path d="M116 38 Q128 28 140 38 L140 136 Q128 144 114 136 Z" fill={MARIGOLD_WASH} />
-          <path d="M40 132 Q100 112 160 132 L168 206 Q100 222 32 206 Z" fill={MARIGOLD_WASH} />
-        </>
-      )}
-      {highlight === "left" && (
-        <>
-          <path d="M44 96 C44 64 54 24 98 22 V100 Q70 102 44 96 Z" fill={MARIGOLD_WASH} stroke="none" />
-          <MouseBody />
-          <Loop cx={71} cy={62} rx={40} ry={48} />
-          <Arrow x1={8} y1={8} x2={34} y2={30} />
-        </>
-      )}
-      {highlight === "wheel" && (
-        <>
-          <Loop cx={100} cy={61} rx={22} ry={30} />
-          <Arrow x1={190} y1={10} x2={128} y2={46} />
-        </>
-      )}
-    </Svg>
-  );
-}
-
-type Key = "backspace" | "space" | "enter" | "shift";
-
-function KeyboardFigure({ highlight }: { highlight: Key }) {
-  const row = (y: number, start: number, count: number) =>
-    Array.from({ length: count }, (_, i) => (
-      <path key={`${y}-${i}`} d={`M${start + i * 25} ${y} h22 v22 h-22 Z`} strokeWidth={1.6} />
-    ));
-  const special: Record<Key, { d: string; label: string; tx: number; ty: number; loop: [number, number, number, number] }> = {
-    backspace: { d: "M311 14 h35 v22 h-35 Z", label: "←", tx: 328, ty: 30, loop: [328, 25, 30, 20] },
-    enter: { d: "M308 66 h38 v22 h-38 Z", label: "Enter", tx: 327, ty: 81, loop: [327, 77, 32, 20] },
-    shift: { d: "M14 92 h52 v22 h-52 Z", label: "Shift", tx: 40, ty: 107, loop: [40, 103, 38, 20] },
-    space: { d: "M89 118 h171 v22 h-171 Z", label: "Space", tx: 174, ty: 133, loop: [174, 129, 98, 20] },
-  };
-  const keys: Key[] = ["backspace", "enter", "shift", "space"];
-  return (
-    <Svg viewBox="0 0 360 156" className="h-full w-full">
-      <path d="M6 6 H354 V148 H6 Z" fill={DEEP} />
-      {row(14, 14, 12)}
-      <path d="M14 40 h32 v22 h-32 Z" strokeWidth={1.6} />
-      {row(40, 50, 11)}
-      <path d="M325 40 h21 v22 h-21 Z" strokeWidth={1.6} />
-      <path d="M14 66 h40 v22 h-40 Z" strokeWidth={1.6} />
-      {row(66, 58, 10)}
-      {row(92, 70, 10)}
-      <path d="M320 92 h26 v22 h-26 Z" strokeWidth={1.6} />
-      {row(118, 14, 3)}
-      <path d="M263 118 h22 v22 h-22 Z M288 118 h22 v22 h-22 Z M313 118 h33 v22 h-33 Z" strokeWidth={1.6} />
-      {keys.map((k) => (
-        <g key={k}>
-          <path d={special[k].d} fill={k === highlight ? MARIGOLD_WASH : PAPER} strokeWidth={k === highlight ? 2.6 : 1.6} />
-          <text
-            x={special[k].tx}
-            y={special[k].ty}
-            textAnchor="middle"
-            fontSize={k === "backspace" ? 15 : 10}
-            fontWeight="700"
-            fill="currentColor"
-            stroke="none"
-            fontFamily="system-ui, sans-serif"
-          >
-            {special[k].label}
-          </text>
-        </g>
-      ))}
-      <Loop cx={special[highlight].loop[0]} cy={special[highlight].loop[1]} rx={special[highlight].loop[2]} ry={special[highlight].loop[3]} />
-    </Svg>
-  );
-}
-
 function WordFigure({ highlight }: { highlight: "bold" | "bigger" | "save" }) {
   const label = (x: number, y: number, s: string, size = 12, weight = 700) => (
     <text x={x} y={y} textAnchor="middle" fontSize={size} fontWeight={weight} fill="currentColor" stroke="none" fontFamily="Georgia, serif">
@@ -426,23 +341,44 @@ function StartFigure({ menu }: { menu: boolean }) {
   );
 }
 
-/** The diagram for a lesson step. */
-export function FigureDrawing({ figure }: { figure: Figure }) {
+type PhotoFigure = Extract<Figure, `mouse-${string}` | `keyboard-${string}`>;
+
+/** A real photo with the important part circled. */
+function FigurePhoto({ figure, decorative }: { figure: PhotoFigure; decorative?: boolean }) {
+  const t = useTranslations("photos");
+  const [photo, rings, alt]: [StaticImageData, Box[], string] = (() => {
+    switch (figure) {
+      case "mouse-hand":
+        return [photos.mouseHand, [{ l: 37, t: 12, w: 50, h: 52 }], t("mouseHand")];
+      case "mouse-left":
+        return [photos.mouse, [grow(mouseBoxes.left, 5, 4)], t("mouseLeft")];
+      case "mouse-wheel":
+        return [photos.mouse, [grow(mouseBoxes.wheel, 5, 4)], t("mouseWheel")];
+      case "keyboard-backspace":
+        return [photos.keyboardMain, keyBoxes.backspace.map((b) => grow(b, 2.5, 6)), t("keyboardBackspace")];
+      case "keyboard-space":
+        return [photos.keyboardMain, keyBoxes.space.map((b) => grow(b, 2.5, 6)), t("keyboardSpace")];
+      case "keyboard-enter":
+        return [photos.keyboardMain, keyBoxes.enter.map((b) => grow(b, 2.5, 6)), t("keyboardEnter")];
+      case "keyboard-shift":
+        return [photos.keyboardMain, keyBoxes.shift.map((b) => grow(b, 2.5, 6)), t("keyboardShift")];
+    }
+  })();
+  // The hand photo is wide but not detailed: keep it small enough to see the whole screen.
+  return <PhotoWithRing photo={photo} rings={rings} alt={decorative ? "" : alt} className={figure === "mouse-hand" ? "mx-auto max-w-sm" : ""} />;
+}
+
+/** The picture for a lesson step: a photo for real things, a drawing for screens. */
+export function FigureDrawing({ figure, decorative }: { figure: Figure; decorative?: boolean }) {
   switch (figure) {
     case "mouse-hand":
-      return <MouseFigure highlight="hand" />;
     case "mouse-left":
-      return <MouseFigure highlight="left" />;
     case "mouse-wheel":
-      return <MouseFigure highlight="wheel" />;
     case "keyboard-backspace":
-      return <KeyboardFigure highlight="backspace" />;
     case "keyboard-space":
-      return <KeyboardFigure highlight="space" />;
     case "keyboard-enter":
-      return <KeyboardFigure highlight="enter" />;
     case "keyboard-shift":
-      return <KeyboardFigure highlight="shift" />;
+      return <FigurePhoto figure={figure} decorative={decorative} />;
     case "start-button":
       return <StartFigure menu={false} />;
     case "power-menu":
@@ -456,8 +392,8 @@ export function FigureDrawing({ figure }: { figure: Figure }) {
   }
 }
 
-/** True for wide diagrams (keyboard, screens) so they get more room. */
-export const isWideFigure = (figure: Figure) => !figure.startsWith("mouse");
+/** True for wide pictures (keyboard, hand on mouse, screens) so they get more room. */
+export const isWideFigure = (figure: Figure) => figure === "mouse-hand" || !figure.startsWith("mouse");
 
 // ---- Practice pictures ----
 
@@ -561,43 +497,35 @@ export function Nati({ mood = "talk", className }: { mood?: NatiMood; className?
 
 // ---- Answer pictures ----
 
-export function PictureDrawing({ picture, className }: { picture: Picture; className?: string }) {
-  switch (picture) {
-    case "mouse":
-      return (
-        <Svg viewBox="0 0 120 110" className={className}>
-          <path d="M60 14 C88 14 94 42 94 66 C94 92 80 104 60 104 C40 104 26 92 26 66 C26 42 32 14 60 14 Z" fill={PAPER} />
-          <path d="M27 54 Q60 60 93 54 M60 14 V57" />
-          <path d="M55 26 H65 V44 H55 Z" fill={DEEP} />
-          <path d="M60 14 C60 8 66 6 72 4" />
-        </Svg>
-      );
-    case "keyboard":
-      return (
-        <Svg viewBox="0 0 160 90" className={className}>
-          <path d="M6 14 H154 V78 H6 Z" fill={DEEP} />
-          {[22, 36, 50].map((y) =>
-            Array.from({ length: 10 }, (_, i) => <path key={`${y}-${i}`} d={`M${14 + i * 13.5} ${y} h10 v10 h-10 Z`} strokeWidth={1.4} fill={PAPER} />),
-          )}
-          <path d="M40 64 H120 V73 H40 Z" strokeWidth={1.6} fill={PAPER} />
-        </Svg>
-      );
-    case "screen":
-      return (
-        <Svg viewBox="0 0 140 110" className={className}>
-          <path d="M14 8 H126 V78 H14 Z" fill={PAPER} />
-          <path d="M26 22 H90 M26 34 H108 M26 46 H76" strokeWidth={2} />
-          <path d="M70 78 V94 M50 96 H90" />
-        </Svg>
-      );
-    case "printer":
-      return (
-        <Svg viewBox="0 0 140 110" className={className}>
-          <path d="M40 10 H100 V40 H40 Z" fill={PAPER} />
-          <path d="M14 40 H126 V84 H14 Z" fill={DEEP} />
-          <path d="M40 70 H100 V102 H40 Z" fill={PAPER} />
-          <path d="M50 82 H90 M50 92 H80" strokeWidth={1.8} />
-        </Svg>
-      );
-  }
+const picturePhotos: Record<Picture, { photo: StaticImageData; alt: "picMouse" | "picKeyboard" | "picScreen" | "picPrinter" }> = {
+  mouse: { photo: photos.mouse, alt: "picMouse" },
+  keyboard: { photo: photos.keyboardFull, alt: "picKeyboard" },
+  screen: { photo: photos.monitor, alt: "picScreen" },
+  printer: { photo: photos.printer, alt: "picPrinter" },
+};
+
+/**
+ * A photo of a real thing. `boxed` fits it inside a square (for answer buttons);
+ * `decorative` leaves out the description when the button already says it.
+ */
+export function PictureDrawing({
+  picture,
+  className = "",
+  boxed = false,
+  decorative = false,
+}: {
+  picture: Picture;
+  className?: string;
+  boxed?: boolean;
+  decorative?: boolean;
+}) {
+  const t = useTranslations("player");
+  const { photo, alt } = picturePhotos[picture];
+  return boxed ? (
+    <span className={`relative block aspect-square ${className}`}>
+      <Image src={photo} alt={decorative ? "" : t(alt)} fill sizes="(min-width: 640px) 12rem, 30vw" className="object-contain" />
+    </span>
+  ) : (
+    <Image src={photo} alt={decorative ? "" : t(alt)} sizes="(min-width: 640px) 36rem, 100vw" className={`block h-auto ${className}`} />
+  );
 }

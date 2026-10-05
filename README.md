@@ -29,7 +29,7 @@ app/[locale]/(focus)/    Lessons (/learn/[chapter]/[lesson]) and brush-up (/revi
 components/learn/        The learning engine: LessonPlayer, the exercise screens (Exercises.tsx), tappable
                          mouse/keyboard pictures, on-screen keyboard, skill tasks, PathView, GoalSummary
 components/practice/     Free practice exercises (mouse board, typing, shut-down screen, pretend Word)
-components/illustrations Hand-drawn style SVG drawings, including Nati, the guide
+components/illustrations Hand-drawn style SVG drawings (including Nati, the guide) and real photos (Photos.tsx)
 content/path.ts          The learning path: chapters → lessons → exercises, in both languages
 messages/bn.json, en.json  Every piece of interface text
 lib/storage.ts           The only place that reads or writes saved data
@@ -100,7 +100,7 @@ Open `content/path.ts`, find the chapter, and give the lesson an `exercises` lis
 
 ## Adding real photos and screenshots
 
-We have no real photos yet, so the site uses hand-drawn style SVG drawings (`components/illustrations/Drawings.tsx`). **Do not use stock photos or AI-generated people.**
+The real things on a learner's desk (mouse, keyboard, monitor, printer) are shown as **real photos** from Wikimedia Commons, in `public/photos/` (`components/illustrations/Photos.tsx`). Every photo needs a free licence and is listed in `public/photos/CREDITS.md` and `lib/photoCredits.ts`, which feed the "Photo credits" page (`/credits`, linked in the footer). Rings and tap areas on a photo are placed with percentages measured on that photo (`mouseBoxes`, `keyBoxes`): if you swap a photo, measure them again. Nati, the practice drawings and the screen pictures are still hand-drawn SVG (`components/illustrations/Drawings.tsx`). **Do not use stock photos or AI-generated people.**
 
 - **Lesson pictures.** Put files in `public/screenshots/`. To use them on `learn` screens, add an `image` option next to `figure` in `content/path.ts` and render it in `LearnView` (`components/learn/Exercises.tsx`).
 - **Learner photos and testimonials.** There is a commented-out section at the end of `app/[locale]/page.tsx`. Only add real quotes from real learners, with their permission. Never add made-up numbers or reviews.
