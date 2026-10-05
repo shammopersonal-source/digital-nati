@@ -32,7 +32,7 @@ content/courses.ts       All courses and lessons, in both languages
 messages/bn.json, en.json  Every piece of interface text
 lib/storage.ts           The only place that reads or writes saved data
 lib/auth.ts              Mock phone + one-time-code login
-lib/site.ts              Phone numbers, KARJO links, founder name
+lib/site.ts              Phone numbers, KARJO links, founder name (Ali Zawad)
 i18n/                    Language routing (next-intl)
 proxy.ts                 Sends "/" to Bangla and "/en/…" to English
 ```
@@ -102,6 +102,6 @@ We have no real photos yet, so the site uses hand-drawn style SVG drawings (`com
 
 ## Things still to fill in
 
-- `lib/site.ts`: `karjoPrimeUrl` (the footer link appears once this is set) and `founderName`.
+- `lib/site.ts`: `karjoPrimeUrl` (the footer link appears once this is set).
 - Lesson videos and captions, and the "How to use this website" video (in the help panel and on `/help`).
 - Lesson content for the courses marked "coming soon".

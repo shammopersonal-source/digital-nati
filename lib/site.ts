@@ -27,5 +27,4 @@ export const karjoUrl = "https://karjo.co.uk";
 // TODO: add the KARJO Prime website address. The footer shows the link once this is set.
 export const karjoPrimeUrl: string | null = null;
 
-// TODO: add the founder's name when we want to show it on the site.
-export const founderName = "[Founder name]";
+export const founderName = "Ali Zawad";

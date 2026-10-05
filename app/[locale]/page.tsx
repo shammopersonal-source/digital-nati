@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { ButtonLink, TextLink } from "@/components/Button";
 import CourseList from "@/components/CourseList";
+import { founderName } from "@/lib/site";
 import { LaptopWithCha, PhoneMessage } from "@/components/illustrations/Drawings";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -82,7 +83,7 @@ function Home() {
       <section aria-labelledby="why" className="mx-auto max-w-page px-5 pb-6">
         <h2 id="why">{t("whyTitle")}</h2>
         <div className="mt-4 space-y-4 border-l-4 border-marigold pl-5">
-          <p>{t("why1")}</p>
+          <p>{t("why1", { founder: founderName })}</p>
           <p>{t("why2")}</p>
           <p className="font-bold">{t("why3")}</p>
         </div>
